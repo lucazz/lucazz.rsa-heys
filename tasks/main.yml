@@ -1,0 +1,12 @@
+---
+- name: install httplib2
+  sudo: true
+  pip: name=httplib2
+
+- name: Get the list of users from the target Org
+  uri: url=https://api.github.com/orgs/{{ github_org }}/members return_content=yes
+  register: org
+
+- name: Add keys to Ubuntu systems
+  authorized_key: user=ubuntu key=https://github.com/{{ item.login }}.keys
+  with_items: org.json
